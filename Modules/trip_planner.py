@@ -24,7 +24,6 @@ class TripPlanner(object):
         Initiates the object
         """
         self.model = {}
-        self.locations = []
         self.manager = None
         self.solver = Solver()
         self.d_mat_creator = DistMatCreator()
@@ -35,7 +34,7 @@ class TripPlanner(object):
         :param locations: List of the locations to visit on the trip
         :return: tuple of the plan + the dropped locations
         """
-        self.init_model()
+        self.init_model(locations)
 
         # Create the routing index manager.
         self.manager = pywrapcp.RoutingIndexManager(len(self.model[DISTANCE_MATRIX]), self.model[NUM_DAYS], self.model[DEPOT])
@@ -64,17 +63,19 @@ class TripPlanner(object):
         assignment = routing.SolveWithParameters(search_parameters)
 
         # Print solution on console.
+        # TODO: Need to replace the print_solution to something we want to work with
         if assignment:
             print_solution(self.model, self.manager, routing, assignment)
 
-        return 1, 1
+        return 1, 1  # TODO: change to actual return values
 
-    def init_model(self):
+    def init_model(self, locations: list):
         """
         Return the model to the solver
+        :param locations: List of the locations to visit on the trip
         :return: Model for the solver
         """
-        self.model[DISTANCE_MATRIX] = self.d_mat_creator.get_dis_mat(self.locations)
+        self.model[DISTANCE_MATRIX] = self.d_mat_creator.get_dis_mat(locations)
         self.model[DEMANDS] = [0, 1, 1, 3, 6, 3, 6, 8, 8, 1, 2, 1, 2, 6, 6, 8, 8]
         self.model[DAY_CAPACITIES] = [15, 15, 15, 15]
         self.model[NUM_DAYS] = 4
