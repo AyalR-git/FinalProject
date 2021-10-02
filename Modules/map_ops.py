@@ -2,10 +2,9 @@
 Written by Ayal Rana & Nir Presser
 """
 
+from globals import API_KEY
 from datetime import datetime
 from googlemaps.client import Client
-
-API_KEY = ""  # TODO: Needed if we are going to use google maps
 
 
 class MapOps(object):
