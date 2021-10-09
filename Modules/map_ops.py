@@ -2,9 +2,10 @@
 Written by Ayal Rana & Nir Presser
 """
 
-from globals import API_KEY
-from datetime import datetime
-from googlemaps.client import Client
+import re
+import urllib.request
+from globals import (DIRECTIONS_URL, TRAVEL_DURATION_PATTERN,
+                     SEC_IN_HOUR, NOT_FOUND_ERROR, DEFAULT_LOCATION_CHECKER)
 
 
 class MapOps(object):
@@ -15,16 +16,34 @@ class MapOps(object):
         """
         Initiats the object
         """
-        self.gmaps = Client(API_KEY)
+        self.bing_maps_url = DIRECTIONS_URL
 
-    def get_distance(self, loc1, loc2) -> tuple:
+    def is_location_exists(self, loc) -> bool:
+        """
+        Verifies if a location exists or no.
+        :param loc: The location to check
+        :return: True or False
+        """
+        try:
+            route_url = DIRECTIONS_URL % (loc, DEFAULT_LOCATION_CHECKER)
+            request = urllib.request.Request(route_url)
+            response = urllib.request.urlopen(request)
+            return True
+
+        except Exception:
+                return False
+
+    def get_duration(self, loc1, loc2) -> float:
         """
         Gets the distance between two locations
         :param loc1: First location
         :param loc2: Second location
-        :return: The distance and duration between the places (dist, dur)
+        :return: The duration between the locations
         """
-        now = datetime.now()
-        directions_result = self.gmaps.directions(loc1, loc2, mode="transit", departure_time=now)
-        # TODO: Need to test and parse output to return dist and dur (maybe only dur since the hours is what we want)
-        return 1, 1
+        route_url = DIRECTIONS_URL % (loc1, loc2)
+        request = urllib.request.Request(route_url)
+        response = urllib.request.urlopen(request)
+
+        r = response.read().decode(encoding="utf-8")
+        duration = float(re.findall(TRAVEL_DURATION_PATTERN, r)[0]) / SEC_IN_HOUR
+        return duration
