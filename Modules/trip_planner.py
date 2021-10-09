@@ -19,33 +19,35 @@ class TripPlanner(object):
         self.solver = Solver()
         self.d_mat_creator = DistMatCreator()
 
-    def get_plan(self, locations: list):
+    def get_plan(self, locations: list, num_of_days: int):
         """
         Return a trip plan by which the user can travel
         :param locations: List of the locations to visit on the trip
+        :param num_of_days: Number of days for the trip
         :return: The trip plan
         """
         # Create the model
-        self.__init_model(locations)
+        self.__init_model(locations=locations, num_of_days=num_of_days)
+        plan, dropped_locations = self.solver.solve(self.model, locations)
 
-        plan, dropped_locations = self.solver.solve(self.model)
+        return plan, dropped_locations
 
-        # TODO: Need to choose what to return or print here
-        return ""
-
-    def __init_model(self, locations: list):
+    def __init_model(self, locations: list, num_of_days: int):
         """
         Return the model to the solver
         :param locations: List of the locations to visit on the trip
+        :param num_of_days: Number of days for the trip
         :return: Model for the solver
         """
         self.model[DISTANCE_MATRIX] = self.d_mat_creator.get_dis_mat(locations)
-        self.model[DEMANDS] = [0, 1, 1, 3, 6, 3, 6, 8, 8, 1, 2, 1, 2, 6, 6, 8, 8]
-        self.model[DAY_CAPACITIES] = [15, 15, 15, 15]
-        self.model[NUM_DAYS] = 4
+        self.model[DEMANDS] = [0]*len(locations)
+        self.model[DAY_CAPACITIES] = [6]*num_of_days
+        self.model[NUM_DAYS] = num_of_days
         self.model[DEPOT] = 0
 
 
 if __name__ == "__main__":
     obj = TripPlanner()
-    obj.get_plan([])
+    p, d = obj.get_plan(locations=["Vienna", "Graz", "Gusausee", "Innsbruck", "Murau"], num_of_days=1)
+    print(p)
+    print(d)

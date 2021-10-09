@@ -4,8 +4,7 @@ Written by Ayal Rana & Nir Presser
 
 import re
 import urllib.request
-from globals import (DIRECTIONS_URL, TRAVEL_DURATION_PATTERN,
-                     SEC_IN_HOUR, NOT_FOUND_ERROR, DEFAULT_LOCATION_CHECKER)
+from globals import *
 
 
 class MapOps(object):
