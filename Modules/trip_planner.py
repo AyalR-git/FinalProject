@@ -4,7 +4,6 @@ Written by Ayal Rana & Nir Presser
 
 from Modules.tspd_solver import TSPDSolver
 from Modules.dist_mat_creator import DistMatCreator
-from Modules.globals import HOUR_PER_DAY, HOUR_PER_SLEEP
 
 
 class TripPlanner(object):

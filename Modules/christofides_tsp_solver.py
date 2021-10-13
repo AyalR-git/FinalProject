@@ -14,8 +14,8 @@ class ChristofidesTSPSolver(object):
     def __init__(self, graph):
         """
         Initiates the required resources for computing the solution
-        @param graph: The graph in which the problem exist
-        @type graph: Graph
+        :param graph: The graph in which the problem exist
+        :type graph: Graph
         """
         self.graph = graph
         self.mst_graph = None
@@ -30,10 +30,10 @@ class ChristofidesTSPSolver(object):
     def solve(self, start_vertex):
         """
         Solves the TSP problem using christofides algorithm
-        @param start_vertex: The start vertex of the graph from which we will solve
-        @type start_vertex: int
-        @return: A route estimated to be the solution for the TSP
-        @rtype: tuple(tuple(int), int)
+        :param start_vertex: The start vertex of the graph from which we will solve
+        :type start_vertex: int
+        :return: A route estimated to be the solution for the TSP
+        :rtype: tuple(tuple(int), int)
         """
         if self.graph.get_num_of_existing_edges() == 2:
             for i in range(self.graph.size):
@@ -57,10 +57,10 @@ class ChristofidesTSPSolver(object):
     def solve_with_match(self, start):  # DO NOT USE - EXPERIMENTAL
         """
         Solves the TSP problem using christofides algorithm with matching
-        @param start: The start vertex of the graph from which we will solve
-        @type start: int
-        @return: A route estimated to be the solution for the TSP
-        @rtype: tuple(tuple(int), int)
+        :param start: The start vertex of the graph from which we will solve
+        :type start: int
+        :return: A route estimated to be the solution for the TSP
+        :rtype: tuple(tuple(int), int)
         """
         self._find_mst(start)
         print(self.mst_graph.get_graph())
@@ -79,10 +79,10 @@ class ChristofidesTSPSolver(object):
     def _find_mst(self, start):
         """
         Finds the Minimal Spanning Tree of the graph
-        @param start: The root of the MST
-        @type start: int
-        @return: The MST represented as a graph
-        @rtype: Graph
+        :param start: The root of the MST
+        :type start: int
+        :return: The MST represented as a graph
+        :rtype: Graph
         """
         self.mst_graph = GraphGenerator(self.graph.size)
         self.mst_graph.make_zeros()
@@ -125,8 +125,8 @@ class ChristofidesTSPSolver(object):
     def _odd_vertices_of_mst(self):
         """
         Returns the vertices having Odd degree in the Minimum Spanning Tree(MST).
-        @return: List of vertices with an odd degree
-        @rtype: List(int)
+        :return: List of vertices with an odd degree
+        :rtype: List(int)
         """
         if not self.mst_graph:
             self._find_mst(0)
@@ -146,8 +146,8 @@ class ChristofidesTSPSolver(object):
     def _reduce_to_odd_vertices(self):
         """
         Reduces the original graph to be without even degree vertices
-        @return: The new reduced graph
-        @rtype: Graph
+        :return: The new reduced graph
+        :rtype: Graph
         """
         self.reduced_to_odd_vertices_graph = GraphGenerator(self.graph.size)
         self.reduced_to_odd_vertices_graph.make_zeros()
@@ -168,8 +168,8 @@ class ChristofidesTSPSolver(object):
     def _find_minimal_matching(self):
         """
         Finds the minimal perfect matching in a given graph
-        @return: The minimal match and the minimal cost of the latter
-        @rtype: tuple(list, list)
+        :return: The minimal match and the minimal cost of the latter
+        :rtype: tuple(list, list)
         """
         match_options = [set(i) for i in itertools.combinations(set(self.odd_vertices_of_graph), len(self.odd_vertices_of_graph) // 2)]
         vertex_sets_to_bipatrite = []
@@ -209,10 +209,10 @@ class ChristofidesTSPSolver(object):
     def _find_minimal_cost(self, item):
         """
         Finds the minimal cost of a certain possible matching
-        @param item: A pair of vertex set and a graph
-        @type item: tuple
-        @return: The minimal cost
-        @rtype: int
+        :param item: A pair of vertex set and a graph
+        :type item: tuple
+        :return: The minimal cost
+        :rtype: int
         """
         vertex_set, bipart_graph = item
         minimal_cost = 0
@@ -246,8 +246,8 @@ class ChristofidesTSPSolver(object):
     def _unite_mst_and_match(self):
         """
         Unites the MST and the matched graph
-        @return: The new united graph
-        @rtype: Graph
+        :return: The new united graph
+        :rtype: Graph
         """
         self.united_graph = GraphGenerator(self.mst_graph.size)
         self.united_graph.make_zeros()
@@ -271,12 +271,12 @@ class ChristofidesTSPSolver(object):
     def _find_euler_tour(self, start, graph):
         """
         Finds an euler tour over the graph beginning from start
-        @param start: The vertex to begin from
-        @type start: int
-        @param graph: The graph to find the euler route on
-        @type graph: Graph
-        @return: The euler route
-        @rtype: ist(int)
+        :param start: The vertex to begin from
+        :type start: int
+        :param graph: The graph to find the euler route on
+        :type graph: Graph
+        :return: The euler route
+        :rtype: List(int)
         """
         num_of_edges = graph.get_num_of_existing_edges()
         edges_visited = []
@@ -308,10 +308,10 @@ class ChristofidesTSPSolver(object):
     def _remove_repeating_vertices(self, route):
         """
         Removes repeated vertices from a particular route
-        @param route: The route to modify
-        @type route: list(int)
-        @return: The new modified route
-        @rtype: list(int)
+        :param route: The route to modify
+        :type route: list(int)
+        :return: The new modified route
+        :rtype: list(int)
         """
         reduced_route = []
         for i in route:
@@ -326,10 +326,10 @@ class ChristofidesTSPSolver(object):
     def _calculate_route_cost(self, route):
         """
         Calculates a routes cost
-        @param route: The route to calculate
-        @type route: tuple(int)
-        @return: The cost of the route
-        @rtype: int
+        :param route: The route to calculate
+        :type route: tuple(int)
+        :return: The cost of the route
+        :rtype: int
         """
         cost = 0
         for i in range(len(route)-1):

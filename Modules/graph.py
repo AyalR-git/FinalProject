@@ -17,10 +17,10 @@ class GraphGenerator(object):
     def __new__(cls, size, upper_bound=100):
         """
         Generate a random graph with random values of size 'size'
-        @param size: The number of vertices
-        @type: int
-        @param upper_bound: The upper bound of random values for graph edges
-        @type: int
+        :param size: The number of vertices
+        :type: int
+        :param upper_bound: The upper bound of random values for graph edges
+        :type: int
         """
         ret = Graph(size, upper_bound)
         ret.randomize_edges()
@@ -34,9 +34,11 @@ class Graph(object):
     def __init__(self, size, upper_bound=100, dist_mat=None):
         """
         Creating a Graph instance with required attributes
-        @param size: The number of vertices
-        @type: int
+        :param size: The number of vertices
+        :param upper_bound: An upper bound for matrix size
+        :param dist_mat: A matrix from which to create the graph
         """
+        self.dist_mat = dist_mat
         self.upper_bound = upper_bound
         self.size = size
         zeros = [[0] * size for i in range(size)]
@@ -50,12 +52,16 @@ class Graph(object):
     def __copy__(self):
         """
         Creates and returns a copy of this graph instance
-        @return: Copied instance f this graph
-        @rtype: Graph
+        :return: Copied instance f this graph
+        :rtype: Graph
         """
-        graph_copy = Graph(self.dist_mat, self.size)
-        graph_copy._graph = np.array(self._graph)
+        if self.dist_mat:
+            graph_copy = Graph(dist_mat=self.dist_mat, size=self.size)
 
+        else:
+            graph_copy = Graph(size=self.size)
+
+        graph_copy._graph = np.array(self._graph)
         return graph_copy
 
     def randomize_edges(self):
@@ -77,34 +83,34 @@ class Graph(object):
     def get_edge(self, vertex1, vertex2):
         """
         Return the edge's weight between 2 vertices
-        @param vertex1: The source vertex index
-        @type: int
-        @param vertex2: The dest vertex index
-        @type: int
-        @return: The weight of the edge between vertex1 and vertex2 or EDGE_NOT_EXIST
-        @rtype: int
+        :param vertex1: The source vertex index
+        :type: int
+        :param vertex2: The dest vertex index
+        :type: int
+        :return: The weight of the edge between vertex1 and vertex2 or EDGE_NOT_EXIST
+        :rtype: int
         """
         return [self._graph[vertex1][vertex2], EDGE_NOT_EXIST][self._graph[vertex1][vertex2] == 0]
 
     def set_edge(self, vertex1, vertex2, val):
         """
         Return the edge's weight between 2 vertices
-        @param vertex1: The source vertex index
-        @type: int
-        @param vertex2: The dest vertex index
-        @type: int
-        @param val: The value to insert
-        @type: int
+        :param vertex1: The source vertex index
+        :type: int
+        :param vertex2: The dest vertex index
+        :type: int
+        :param val: The value to insert
+        :type: int
         """
         self._graph[vertex1][vertex2] = val
 
     def all_poss_round_trips(self, start_vertex):
         """
         Returns all possible round trips order in the graph - from start_vertex to start_vertex through all vertices
-        @param start_vertex: The vertex from which we want all possible round trips
-        @type: int
-        @return: List of all possible round trips when each round trip is represented as tuple
-        @rtype: list(tuple)
+        :param start_vertex: The vertex from which we want all possible round trips
+        :type: int
+        :return: List of all possible round trips when each round trip is represented as tuple
+        :rtype: list(tuple)
         """
         tuple_of_first = (start_vertex,)
         vertices_t0_perm = []
@@ -121,16 +127,16 @@ class Graph(object):
     def get_graph(self):
         """
         Returns the graph
-        @return: the graph
-        @rtype: numpy.array[][]
+        :return: the graph
+        :rtype: numpy.array[][]
         """
         return self._graph
 
     def get_num_of_existing_edges(self):
         """
         Returns the number of existing edges in the graph
-        @return: Num of edges
-        @rtype: int
+        :return: Num of edges
+        :rtype: int
         """
         cnt = 0
         for i in range(self.size):
@@ -162,20 +168,20 @@ class Graph(object):
     def get_out_degree(self, vertex):
         """
         Returns the out degree of the vertex given
-        @param vertex: The vertex whose edges we check
-        @type vertex: int
-        @return: The number of edges vertex has
-        @rtype: int
+        :param vertex: The vertex whose edges we check
+        :type vertex: int
+        :return: The number of edges vertex has
+        :rtype: int
         """
         return len([i for i in range(self.size) if self.get_edge(vertex, i) != EDGE_NOT_EXIST])
 
     def partition(self, collection):
         """
         Returns a partition from a particular collection of vertices
-        @param collection: The list of vertices
-        @type collection: list
-        @return: The partition
-        @rtype: list
+        :param collection: The list of vertices
+        :type collection: list
+        :return: The partition
+        :rtype: list
         """
         if len(collection) == 1:
             yield [collection]
@@ -191,10 +197,10 @@ class Graph(object):
     def all_sub_partitions(self, start_city):
         """
         computes all the available sub-partitions in the graph.
-        @param start_city: start (and end) city of the roundtrip.
-        @type: int.
-        @return: all the available sub-partitions.
-        @rtype: list.
+        :param start_city: start (and end) city of the roundtrip.
+        :type: int.
+        :return: all the available sub-partitions.
+        :rtype: list.
         """
         cities = list(range(0, self.size))
         cities.pop(cities.index(start_city))
@@ -209,12 +215,12 @@ class Graph(object):
     def create_graph_from_subset(self, G, subset):
         """
         Creates a graph from a subpartition
-        @param G: The original graph
-        @type G: Graph
-        @param subset: The subset from which to create the graph
-        @type subset: list
-        @return: The graph representation of the subset
-        @rtype: Graph
+        :param G: The original graph
+        :type G: Graph
+        :param subset: The subset from which to create the graph
+        :type subset: list
+        :return: The graph representation of the subset
+        :rtype: Graph
         """
         local_g = GraphGenerator(G.size, 10)
         local_g.make_zeros()

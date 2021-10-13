@@ -38,11 +38,11 @@ class TSPDSolver(object):
 
     def get_optimal_travel_routes(self, graph, solver_obj=ChristofidesTSPSolver):
         """
-        Returns the best travel plan for a drone with a limit of a distance per round trip
-        @param graph:The graph on which we will analyze the travel plan
-        @type graph: Graph
-        @param solver_obj: The solver constructor for creating a solver object
-        @type solver_obj: Solver Obj
+        Returns the best travel plan for a day with a limit of a travel duration
+        :param graph:The graph on which we will analyze the travel plan
+        :type graph: Graph
+        :param solver_obj: The solver constructor for creating a solver object
+        :type solver_obj: Solver Obj
         """
         possible_routes = {}
         optimal_route = []
