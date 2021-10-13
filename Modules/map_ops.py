@@ -4,7 +4,7 @@ Written by Ayal Rana & Nir Presser
 
 import re
 import urllib.request
-from globals import *
+from Modules.globals import *
 
 
 class MapOps(object):

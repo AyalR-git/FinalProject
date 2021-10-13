@@ -8,6 +8,10 @@ DEMANDS = "demands"
 DAY_CAPACITIES = "vehicle_capacities"
 NUM_DAYS = "num_vehicles"
 DEPOT = "depot"
+DONE = "done"
+STATUS_CHANGE = 1
+STATUS_EXIT = 0
+MAX_ROUND_TRIP = 11
 
 # Defines to use bingmaps
 API_KEY = "AkDeY4EhjZQkB_KGuhPdKpbAi_sEnJGOk-HEuigZtXWRkwut1SUWwXTDfFrUGmFm"

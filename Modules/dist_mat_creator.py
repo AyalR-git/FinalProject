@@ -2,7 +2,7 @@
 Written by Ayal Rana & Nir Presser
 """
 
-from map_ops import MapOps
+from Modules.map_ops import MapOps
 
 
 class DistMatCreator(object):

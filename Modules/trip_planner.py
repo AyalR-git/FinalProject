@@ -2,9 +2,9 @@
 Written by Ayal Rana & Nir Presser
 """
 
-from globals import *
-from solver import Solver
-from dist_mat_creator import DistMatCreator
+from Modules.tspd_solver import TSPDSolver
+from Modules.dist_mat_creator import DistMatCreator
+from Modules.globals import HOUR_PER_DAY, HOUR_PER_SLEEP
 
 
 class TripPlanner(object):
@@ -15,39 +15,68 @@ class TripPlanner(object):
         """
         Initiates the object
         """
-        self.model = {}
-        self.solver = Solver()
+        self.solver = None
         self.d_mat_creator = DistMatCreator()
 
-    def get_plan(self, locations: list, num_of_days: int):
+    def get_plan(self, locations: list, num_of_days: int, start_location=0):
         """
         Return a trip plan by which the user can travel
         :param locations: List of the locations to visit on the trip
         :param num_of_days: Number of days for the trip
+        :param start_location: The location from which to start
         :return: The trip plan
         """
-        # Create the model
-        self.__init_model(locations=locations, num_of_days=num_of_days)
-        plan, dropped_locations = self.solver.solve(self.model, locations)
+        plan = []
+        num_locations = len(locations)
+        locations_dict = {}
+        for i in range(num_locations):
+            locations_dict[i] = locations[i]
 
-        return plan, dropped_locations
+        dist_mat = self.d_mat_creator.get_dis_mat(locations)
+        if not dist_mat:
+            return []
 
-    def __init_model(self, locations: list, num_of_days: int):
-        """
-        Return the model to the solver
-        :param locations: List of the locations to visit on the trip
-        :param num_of_days: Number of days for the trip
-        :return: Model for the solver
-        """
-        self.model[DISTANCE_MATRIX] = self.d_mat_creator.get_dis_mat(locations)
-        self.model[DEMANDS] = [0]*len(locations)
-        self.model[DAY_CAPACITIES] = [6]*num_of_days
-        self.model[NUM_DAYS] = num_of_days
-        self.model[DEPOT] = 0
+        self.solver = TSPDSolver(dist_mat=dist_mat, locations=locations, start_location=start_location)
+        optimal_routes = self.solver.solve(dist_mat)
 
+        # Get only the plan for the number of days given
+        for i in range(num_of_days):
+            if not optimal_routes:
+                break
 
-if __name__ == "__main__":
-    obj = TripPlanner()
-    p, d = obj.get_plan(locations=["Vienna", "Graz", "Gusausee", "Innsbruck", "Murau"], num_of_days=1)
-    print(p)
-    print(d)
+            max_route = None
+            max_len = 0
+            max_index = None
+            routes_to_check = list(optimal_routes)
+            for j in range(len(routes_to_check)):
+                if len(routes_to_check[j]) > max_len:
+                    max_route = routes_to_check[j]
+                    max_index = j
+                    max_len = len(routes_to_check[j])
+
+            optimal_routes.pop(max_index)
+            plan.append(max_route)
+
+        # Print Plan
+        print(f"Best plan for {num_of_days} days:")
+        index = 1
+        for route in plan:
+            rt_output = ""
+            print(f"Route for day {index}:")
+            iteration = 0
+            for j in route:
+                if iteration == len(route) - 1:
+                    rt_output += f"  {locations_dict[j]}"
+                    break
+
+                rt_output += "  {0}  -----  Drive Duration: {1:.2f} Hours ----->".format(locations_dict[j], dist_mat[route[iteration]][route[iteration+1]])
+                iteration += 1
+
+            print(rt_output)
+            print("\n")
+            print("Calculations are assuming a transit time of 1.5 hours average spent on each location")
+            print("An overall of maximum of 11 hours of travel per day, All the rest is to sleep, eat and chill ;)\n\n")
+
+            index += 1
+
+        return plan
