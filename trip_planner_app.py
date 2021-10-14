@@ -2,6 +2,7 @@
 Written by Ayal Rana & Nir Presser
 """
 
+from Modules.map_ops import MapOps
 from Modules.trip_planner import TripPlanner
 from Modules.globals import STATUS_EXIT, STATUS_CHANGE, DONE
 
@@ -27,6 +28,7 @@ def app():
     """
     source = 0
     location_list = []
+    map_ops = MapOps()
 
     number_of_days = input("Please enter the number of days you want to travel: ")
     number_of_days = int(number_of_days)
@@ -39,11 +41,15 @@ def app():
         if loc == DONE:
             break
 
+        if not map_ops.is_location_exists(loc):
+            print(f"Location {loc} does not exist - Please enter a new one")
+            continue
+
         location_list.append(loc)
 
     print("These are the locations you entered:")
-    for l in location_list:
-        print(l)
+    for pl in location_list:
+        print(pl)
 
     s_loc = input("Please choose one of the locations (By name) at which you want to sleep: ")
     for i in range(len(location_list)):

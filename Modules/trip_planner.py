@@ -1,8 +1,9 @@
 """
 Written by Ayal Rana & Nir Presser
 """
-
+import datetime
 from Modules.tspd_solver import TSPDSolver
+from Modules.globals import LOCATION_FACTOR
 from Modules.dist_mat_creator import DistMatCreator
 
 
@@ -60,22 +61,39 @@ class TripPlanner(object):
         print(f"Best plan for {num_of_days} days:")
         index = 1
         for route in plan:
+            next_time = datetime.time(8, 30)
             rt_output = ""
             print(f"Route for day {index}:")
             iteration = 0
             for j in route:
                 if iteration == len(route) - 1:
-                    rt_output += f"  {locations_dict[j]}"
                     break
 
-                rt_output += "  {0}  -----  Drive Duration: {1:.2f} Hours ----->".format(locations_dict[j], dist_mat[route[iteration]][route[iteration+1]])
+                rt_output += f"Drive Start Time: {next_time}\tDrive Start Location: {locations_dict[j]}\t"
+                drive_dur = dist_mat[route[iteration]][route[iteration+1]]
+                rt_output += "Drive Duration: {0:.2f} hours\t".format(drive_dur)
+                next_time = self._add_time(next_time, drive_dur)
+                rt_output += f"Drive Arrival Time: {next_time}\tDrive Arrival Location:{locations_dict[route[iteration+1]]}\n"
+                next_time = self._add_time(next_time, LOCATION_FACTOR)
                 iteration += 1
 
             print(rt_output)
-            print("\n")
-            print("Calculations are assuming a transit time of 1.5 hours average spent on each location")
-            print("An overall of maximum of 11 hours of travel per day, All the rest is to sleep, eat and chill ;)\n\n")
-
+            print(f"Overall {iteration} location transitions\n")
             index += 1
 
+        print("Calculations are assuming a transit time of 1.5 hours average spent on each location")
+        print("An overall of maximum of 11 hours of travel per day, All the rest is to sleep, eat and chill ;)\n\n")
+
         return plan
+
+    def _add_time(self, time, hours_to_add):
+        """
+        Returns new time after hours_to_add
+        :param time:
+        :param hours_to_add:
+        :return:
+        """
+        timedelta = datetime.timedelta(hours=hours_to_add)
+        start = datetime.datetime(2000, 1, 1, hour=time.hour, minute=time.minute, second=time.second)
+        end = start + timedelta
+        return end.time()

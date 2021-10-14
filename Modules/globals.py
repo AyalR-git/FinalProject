@@ -12,6 +12,7 @@ DONE = "done"
 STATUS_CHANGE = 1
 STATUS_EXIT = 0
 MAX_ROUND_TRIP = 11
+LOCATION_FACTOR = 1.5
 
 # Defines to use bingmaps
 API_KEY = "AkDeY4EhjZQkB_KGuhPdKpbAi_sEnJGOk-HEuigZtXWRkwut1SUWwXTDfFrUGmFm"
