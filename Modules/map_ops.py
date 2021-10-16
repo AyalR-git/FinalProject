@@ -17,20 +17,28 @@ class MapOps(object):
         """
         self.bing_maps_url = DIRECTIONS_URL
 
-    def is_location_exists(self, loc) -> bool:
+    def is_location_exists(self, country, loc) -> bool:
         """
         Verifies if a location exists or no.
+        :param country: The country in which to search for location
         :param loc: The location to check
         :return: True or False
         """
         try:
-            route_url = DIRECTIONS_URL % (loc, DEFAULT_LOCATION_CHECKER)
+            route_url = COUNTRY_URL % loc
             request = urllib.request.Request(route_url)
             response = urllib.request.urlopen(request)
+            res = response.read().decode(encoding="utf-8")
+
+            countries_list = re.findall(COUNTRY_REGION_PATTERN, res)
+            if country not in countries_list:
+                return False
+
             return True
 
-        except Exception:
-                return False
+        except Exception as e:
+            print(e)
+            return False
 
     def get_duration(self, loc1, loc2) -> float:
         """
@@ -43,6 +51,24 @@ class MapOps(object):
         request = urllib.request.Request(route_url)
         response = urllib.request.urlopen(request)
 
-        r = response.read().decode(encoding="utf-8")
-        duration = float(re.findall(TRAVEL_DURATION_PATTERN, r)[0]) / SEC_IN_HOUR
+        res = response.read().decode(encoding="utf-8")
+        duration = float(re.findall(TRAVEL_DURATION_PATTERN, res)[0]) / SEC_IN_HOUR
         return duration
+
+    def is_in_country_region(self, country, loc):
+        """
+
+        :param country:
+        :param loc:
+        :return:
+        """
+        country_url = COUNTRY_URL % loc
+        request = urllib.request.Request(country_url)
+        response = urllib.request.urlopen(request)
+
+        r = response.read().decode(encoding="utf-8")
+        countries_list = re.findall(COUNTRY_REGION_PATTERN, r)
+        if country not in countries_list:
+            return False
+
+        return True
