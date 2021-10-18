@@ -2,9 +2,9 @@
 Written by Ayal Rana & Nir Presser
 """
 import datetime
-from Modules.tspd_solver import TSPDSolver
-from Modules.globals import LOCATION_FACTOR
+from Modules.tspd_solver import Solver
 from Modules.dist_mat_creator import DistMatCreator
+from Modules.globals import LOCATION_FACTOR, MINUTS_PER_HOUR
 
 
 class TripPlanner(object):
@@ -36,7 +36,7 @@ class TripPlanner(object):
         if not dist_mat:
             return []
 
-        self.solver = TSPDSolver(dist_mat=dist_mat, locations=locations, start_location=start_location)
+        self.solver = Solver(dist_mat=dist_mat, locations=locations, start_location=start_location)
         optimal_routes = self.solver.solve(dist_mat)
 
         # Get only the plan for the number of days given
@@ -71,7 +71,7 @@ class TripPlanner(object):
 
                 rt_output += f"Drive Start Time: {next_time}\tDrive Start Location: {locations_dict[j]}\t"
                 drive_dur = dist_mat[route[iteration]][route[iteration+1]]
-                rt_output += "Drive Duration: {0:.2f} hours\t".format(drive_dur)
+                rt_output += "Drive Duration: {0} hours and {1} minutes\t".format(int(drive_dur*MINUTS_PER_HOUR)//MINUTS_PER_HOUR, int(drive_dur*MINUTS_PER_HOUR)%MINUTS_PER_HOUR)
                 next_time = self._add_time(next_time, drive_dur)
                 rt_output += f"Drive Arrival Time: {next_time}\tDrive Arrival Location:{locations_dict[route[iteration+1]]}\n"
                 next_time = self._add_time(next_time, LOCATION_FACTOR)

@@ -8,7 +8,7 @@ from Modules.globals import MAX_ROUND_TRIP
 from Modules.christofides_tsp_solver import ChristofidesTSPSolver
 
 
-class TSPDSolver(object):
+class Solver(object):
     """
     The solver object
     """

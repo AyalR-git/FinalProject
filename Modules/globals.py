@@ -29,6 +29,7 @@ NOT_FOUND_ERROR = "HTTP Error 404: Not Found"
 DEFAULT_LOCATION_CHECKER = "Vienna"
 HOUR_PER_DAY = 24
 HOUR_PER_SLEEP = 7
+MINUTS_PER_HOUR = 60
 
 # Countries DB
 COUNTRIES = [c.name.lower() for c in countries]
