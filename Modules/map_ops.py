@@ -55,12 +55,12 @@ class MapOps(object):
         duration = float(re.findall(TRAVEL_DURATION_PATTERN, res)[0]) / SEC_IN_HOUR
         return duration
 
-    def is_in_country_region(self, country, loc):
+    def is_in_country_region(self, country, loc) -> bool:
         """
-
-        :param country:
-        :param loc:
-        :return:
+        Checks that loc is in country
+        :param country: The country
+        :param loc: The location to check
+        :return: True or False
         """
         country_url = COUNTRY_URL % loc
         request = urllib.request.Request(country_url)

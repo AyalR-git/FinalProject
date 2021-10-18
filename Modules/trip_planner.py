@@ -32,7 +32,7 @@ class TripPlanner(object):
         for i in range(num_locations):
             locations_dict[i] = locations[i]
 
-        dist_mat = self.d_mat_creator.get_dis_mat(locations)
+        dist_mat = self.d_mat_creator.get_dist_mat(locations)
         if not dist_mat:
             return []
 

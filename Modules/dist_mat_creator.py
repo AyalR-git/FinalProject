@@ -15,7 +15,7 @@ class DistMatCreator(object):
         """
         self.map_ops = MapOps()
 
-    def get_dis_mat(self, locations):
+    def get_dist_mat(self, locations):
         """
         Creates a distance matrix from the given list of location using the MapOps object
         :param locations: The locations from which to create the matrix

@@ -32,11 +32,11 @@ class TSPDSolver(object):
         :return: Tuple of the plan + the dropped locations
         """
         graph = Graph(dist_mat=dist_mat, size=self.num_locations)
-        _, optimal_routes = self.get_optimal_travel_routes(graph)
+        _, optimal_routes = self._get_optimal_travel_routes(graph)
 
         return optimal_routes
 
-    def get_optimal_travel_routes(self, graph, solver_obj=ChristofidesTSPSolver):
+    def _get_optimal_travel_routes(self, graph, solver_obj=ChristofidesTSPSolver):
         """
         Returns the best travel plan for a day with a limit of a travel duration
         :param graph:The graph on which we will analyze the travel plan
