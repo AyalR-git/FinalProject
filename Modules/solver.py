@@ -40,7 +40,7 @@ class Solver(object):
         routing = pywrapcp.RoutingModel(self.manager)
         transit_callback_index = routing.RegisterTransitCallback(self._distance_callback)
 
-        # Define cost of each arc.
+        # Define cost of each arc
         routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
         demand_callback_index = routing.RegisterUnaryTransitCallback(self._demand_callback)
         routing.AddDimensionWithVehicleCapacity(demand_callback_index, 0, self.model[DAY_CAPACITIES], True, 'Capacity')

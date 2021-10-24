@@ -1,6 +1,8 @@
 """
 Written by Ayal Rana & Nir Presser
 """
+
+import pandas
 import datetime
 from Modules.tspd_solver import Solver
 from Modules.dist_mat_creator import DistMatCreator
@@ -27,6 +29,7 @@ class TripPlanner(object):
         :return: The trip plan
         """
         plan = []
+        dropped_locations = list(locations)
         num_locations = len(locations)
         locations_dict = {}
         for i in range(num_locations):
@@ -35,6 +38,10 @@ class TripPlanner(object):
         dist_mat = self.d_mat_creator.get_dist_mat(locations)
         if not dist_mat:
             return []
+
+        to_p = pandas.DataFrame(dist_mat, locations, locations)
+        print(to_p)
+        print("")
 
         self.solver = Solver(dist_mat=dist_mat, locations=locations, start_location=start_location)
         optimal_routes = self.solver.solve(dist_mat)
@@ -69,6 +76,9 @@ class TripPlanner(object):
                 if iteration == len(route) - 1:
                     break
 
+                if locations_dict[j] in dropped_locations:
+                    dropped_locations.remove(locations_dict[j])
+
                 rt_output += f"Drive Start Time: {next_time}\tDrive Start Location: {locations_dict[j]}\t"
                 drive_dur = dist_mat[route[iteration]][route[iteration+1]]
                 rt_output += "Drive Duration: {0} hours and {1} minutes\t".format(int(drive_dur*MINUTS_PER_HOUR)//MINUTS_PER_HOUR, int(drive_dur*MINUTS_PER_HOUR)%MINUTS_PER_HOUR)
@@ -81,7 +91,12 @@ class TripPlanner(object):
             print(f"Overall {iteration} location transitions\n")
             index += 1
 
-        print("Calculations are assuming a transit time of 1.5 hours average spent on each location")
+        if dropped_locations:
+            print("Dropped locations are:")
+            for loc in dropped_locations:
+                print(f"{loc}")
+
+        print("\nCalculations are assuming a transit time of 1.5 hours average spent on each location")
         print("An overall of maximum of 11 hours of travel per day, All the rest is to sleep, eat and chill ;)\n\n")
 
         return plan
